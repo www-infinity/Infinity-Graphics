@@ -235,6 +235,55 @@ const App = (() => {
       });
     });
 
+    // ── Mobile hamburger menu ──
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav     = document.getElementById('mobile-nav');
+    mobileMenuBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = mobileNav.classList.toggle('visible');
+      mobileMenuBtn.textContent = open ? '✕' : '☰';
+      mobileMenuBtn.setAttribute('aria-expanded', open);
+    });
+    // Close mobile nav on outside tap
+    document.addEventListener('click', e => {
+      if (!mobileNav.contains(e.target) && e.target !== mobileMenuBtn) {
+        closeMobileNav();
+      }
+    });
+
+    // Mobile nav item handlers
+    document.querySelectorAll('.mobile-nav-item[data-mobile-action]').forEach(el => {
+      el.addEventListener('click', () => {
+        const action = el.dataset.mobileAction;
+        closeMobileNav();
+        if (action === 'toggle-ai-panel') { switchPanel('ai'); openMobilePanel(); }
+        else if (action.startsWith('ai-')) { AIAssistant.handleAction(action); switchPanel('ai'); openMobilePanel(); }
+        else { handleAction(action); }
+      });
+    });
+    document.querySelectorAll('.mobile-nav-item[data-mobile-mode]').forEach(el => {
+      el.addEventListener('click', () => { setMode(el.dataset.mobileMode); closeMobileNav(); });
+    });
+    document.querySelectorAll('.mobile-nav-item[data-mobile-filter]').forEach(el => {
+      el.addEventListener('click', () => { openFilterModal(el.dataset.mobileFilter); closeMobileNav(); });
+    });
+    document.getElementById('mnav-new-doc').addEventListener('click',    () => { openModal('modal-new-doc'); closeMobileNav(); });
+    document.getElementById('mnav-open').addEventListener('click',       () => { document.getElementById('open-file-input').click(); closeMobileNav(); });
+    document.getElementById('mnav-save-png').addEventListener('click',  () => { ExportManager.exportAs('png',  1,    'infinity-design'); closeMobileNav(); });
+    document.getElementById('mnav-save-jpg').addEventListener('click',  () => { ExportManager.exportAs('jpeg', 0.92, 'infinity-design'); closeMobileNav(); });
+    document.getElementById('mnav-save-svg').addEventListener('click',  () => { ExportManager.exportAs('svg',  1,    'infinity-design'); closeMobileNav(); });
+    document.getElementById('mnav-save-webp').addEventListener('click', () => { ExportManager.exportAs('webp', 0.9,  'infinity-design'); closeMobileNav(); });
+
+    // ── Mobile panel toggle button ──
+    const mobilePanelBtn = document.getElementById('mobile-panel-btn');
+    mobilePanelBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const panel = document.getElementById('right-panel');
+      const isOpen = panel.classList.toggle('mobile-open');
+      mobilePanelBtn.textContent = isOpen ? '✕' : '▶';
+      mobilePanelBtn.classList.toggle('panel-open', isOpen);
+    });
+
     // Header buttons
     document.getElementById('btn-undo').addEventListener('click', () => HistoryManager.undo());
     document.getElementById('btn-redo').addEventListener('click', () => HistoryManager.redo());
@@ -368,6 +417,19 @@ const App = (() => {
 
     // Keyboard shortcuts
     document.addEventListener('keydown', onKeyDown);
+
+    // Close mobile panel when canvas area is tapped
+    document.getElementById('canvas-area').addEventListener('click', () => {
+      if (window.innerWidth <= 600) {
+        const panel = document.getElementById('right-panel');
+        if (panel.classList.contains('mobile-open')) {
+          panel.classList.remove('mobile-open');
+          const btn = document.getElementById('mobile-panel-btn');
+          btn.textContent = '▶';
+          btn.classList.remove('panel-open');
+        }
+      }
+    });
 
     // 3D shape selector (dynamically built below)
   }
@@ -971,13 +1033,35 @@ const App = (() => {
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
     dropdown.style.top  = rect.bottom + 'px';
-    dropdown.style.left = rect.left   + 'px';
+    // Clamp left so the dropdown doesn't overflow off the right edge of the viewport
+    const dropW = dropdown.offsetWidth || 200;
+    const edgePad = 8;
+    const left  = Math.min(rect.left, window.innerWidth - dropW - edgePad);
+    dropdown.style.left = Math.max(0, left) + 'px';
     dropdown.classList.add('visible');
     trigger.classList.add('active');
   }
   function closeAllMenus() {
     document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  }
+
+  function closeMobileNav() {
+    const nav = document.getElementById('mobile-nav');
+    nav.classList.remove('visible');
+    const btn = document.getElementById('mobile-menu-btn');
+    btn.textContent = '☰';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function openMobilePanel() {
+    const panel = document.getElementById('right-panel');
+    const btn   = document.getElementById('mobile-panel-btn');
+    if (window.innerWidth <= 600) {
+      panel.classList.add('mobile-open');
+      btn.textContent = '✕';
+      btn.classList.add('panel-open');
+    }
   }
 
   function switchPanel(name) {

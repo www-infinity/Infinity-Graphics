@@ -38,6 +38,8 @@
     <button id="btn-export" class="action-btn" title="Export" aria-label="Export">Export</button>
     <button id="btn-new" class="action-btn secondary" title="New Document" aria-label="New Document">New</button>
   </div>
+  <!-- Hamburger button — visible only on mobile -->
+  <button id="mobile-menu-btn" class="icon-btn" aria-label="Open menu" title="Menu">☰</button>
 
   <!-- Dropdown menus -->
   <div class="dropdown" id="menu-file">
@@ -109,6 +111,73 @@
     <div class="dropdown-item" data-action="about">About Infinity Graphics</div>
   </div>
 </header>
+
+<!-- ─────────────────── MOBILE NAV OVERLAY ──────────────────── -->
+<div id="mobile-nav" role="navigation" aria-label="Mobile navigation">
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">File</div>
+    <div class="mobile-nav-item" id="mnav-new-doc">New Document…</div>
+    <div class="mobile-nav-item" id="mnav-open">Open Image…</div>
+    <div class="mobile-nav-divider"></div>
+    <div class="mobile-nav-item" id="mnav-save-png">Export as PNG</div>
+    <div class="mobile-nav-item" id="mnav-save-jpg">Export as JPEG</div>
+    <div class="mobile-nav-item" id="mnav-save-svg">Export as SVG</div>
+    <div class="mobile-nav-item" id="mnav-save-webp">Export as WebP</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">Edit</div>
+    <div class="mobile-nav-item" data-mobile-action="undo">Undo</div>
+    <div class="mobile-nav-item" data-mobile-action="redo">Redo</div>
+    <div class="mobile-nav-divider"></div>
+    <div class="mobile-nav-item" data-mobile-action="select-all">Select All</div>
+    <div class="mobile-nav-item" data-mobile-action="deselect">Deselect</div>
+    <div class="mobile-nav-divider"></div>
+    <div class="mobile-nav-item" data-mobile-action="clear-canvas">Clear Canvas</div>
+    <div class="mobile-nav-item" data-mobile-action="flip-h">Flip Horizontal</div>
+    <div class="mobile-nav-item" data-mobile-action="flip-v">Flip Vertical</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">View</div>
+    <div class="mobile-nav-item" data-mobile-action="zoom-in">Zoom In</div>
+    <div class="mobile-nav-item" data-mobile-action="zoom-out">Zoom Out</div>
+    <div class="mobile-nav-item" data-mobile-action="zoom-fit">Fit to Window</div>
+    <div class="mobile-nav-item" data-mobile-action="zoom-100">100%</div>
+    <div class="mobile-nav-divider"></div>
+    <div class="mobile-nav-item" data-mobile-action="toggle-grid">Toggle Grid</div>
+    <div class="mobile-nav-divider"></div>
+    <div class="mobile-nav-item" data-mobile-mode="2d">2D Canvas Mode</div>
+    <div class="mobile-nav-item" data-mobile-mode="svg">SVG Vector Mode</div>
+    <div class="mobile-nav-item" data-mobile-mode="3d">3D WebGL Mode</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">Layer</div>
+    <div class="mobile-nav-item" data-mobile-action="add-layer">New Layer</div>
+    <div class="mobile-nav-item" data-mobile-action="duplicate-layer">Duplicate Layer</div>
+    <div class="mobile-nav-item" data-mobile-action="merge-down">Merge Down</div>
+    <div class="mobile-nav-item" data-mobile-action="flatten">Flatten Image</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">Filter</div>
+    <div class="mobile-nav-item" data-mobile-filter="blur">Gaussian Blur…</div>
+    <div class="mobile-nav-item" data-mobile-filter="brightness">Brightness/Contrast…</div>
+    <div class="mobile-nav-item" data-mobile-filter="hue">Hue/Saturation…</div>
+    <div class="mobile-nav-item" data-mobile-filter="invert">Invert</div>
+    <div class="mobile-nav-item" data-mobile-filter="grayscale">Grayscale</div>
+    <div class="mobile-nav-item" data-mobile-filter="sepia">Sepia</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">AI Assist</div>
+    <div class="mobile-nav-item" data-mobile-action="ai-palette">Generate Color Palette</div>
+    <div class="mobile-nav-item" data-mobile-action="ai-enhance">Auto Enhance</div>
+    <div class="mobile-nav-item" data-mobile-action="ai-suggest">Design Suggestions</div>
+    <div class="mobile-nav-item" data-mobile-action="toggle-ai-panel">Open AI Panel</div>
+  </div>
+  <div class="mobile-nav-section">
+    <div class="mobile-nav-section-title">Help</div>
+    <div class="mobile-nav-item" data-mobile-action="shortcuts">Keyboard Shortcuts</div>
+    <div class="mobile-nav-item" data-mobile-action="about">About Infinity Graphics</div>
+  </div>
+</div>
 
 <!-- ─────────────────── TOOL OPTIONS BAR ──────────────────── -->
 <div id="tool-options-bar">
@@ -413,6 +482,8 @@
       </div>
     </div>
   </aside>
+  <!-- Mobile panel toggle button -->
+  <button id="mobile-panel-btn" aria-label="Toggle panel" title="Properties / Layers / Colors">▶</button>
 </div>
 
 <!-- STATUS BAR -->
