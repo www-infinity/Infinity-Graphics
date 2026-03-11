@@ -9,6 +9,9 @@ const Canvas2D = (() => {
   let tempCtx     = null;
   let gridCanvas  = null;
 
+  const MIN_ZOOM = 0.05;
+  const MAX_ZOOM = 20;
+
   // Drawing state
   let isDrawing  = false;
   let isPanning  = false;
@@ -70,9 +73,10 @@ const Canvas2D = (() => {
     viewport.addEventListener('wheel',     onWheel, { passive: false });
 
     // Touch support
-    viewport.addEventListener('touchstart', onTouchStart, { passive: false });
-    viewport.addEventListener('touchmove',  onTouchMove,  { passive: false });
-    viewport.addEventListener('touchend',   onTouchEnd);
+    viewport.addEventListener('touchstart',  onTouchStart,  { passive: false });
+    viewport.addEventListener('touchmove',   onTouchMove,   { passive: false });
+    viewport.addEventListener('touchend',    onTouchEnd,    { passive: false });
+    viewport.addEventListener('touchcancel', onTouchCancel, { passive: false });
   }
 
   function setSize(w, h) {
@@ -258,26 +262,99 @@ const Canvas2D = (() => {
   }
 
   /* ─── Touch Events ─── */
+  let touchPinchDist  = 0;   // distance between two fingers at gesture start
+  let touchPinchZoom  = 1;   // zoom at gesture start
+  let touchPanStartX  = 0;   // mid-point X at gesture start
+  let touchPanStartY  = 0;   // mid-point Y at gesture start
+  let touchPanOffsetX = 0;   // panOffsetX at gesture start
+  let touchPanOffsetY = 0;   // panOffsetY at gesture start
+  let isTouchPinching = false;
+
+  function getTouchDist(t1, t2) {
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
   function onTouchStart(e) {
     e.preventDefault();
+    if (e.touches.length === 2) {
+      // Begin pinch-zoom / two-finger pan
+      isTouchPinching = true;
+      isDrawing = false;
+      isPanning = false;
+      touchPinchDist  = getTouchDist(e.touches[0], e.touches[1]);
+      touchPinchZoom  = zoom;
+      touchPanStartX  = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      touchPanStartY  = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      touchPanOffsetX = panOffsetX;
+      touchPanOffsetY = panOffsetY;
+      return;
+    }
+    isTouchPinching = false;
+    if (!e.touches[0]) return;
     const t = e.touches[0];
     onMouseDown({ button: 0, clientX: t.clientX, clientY: t.clientY, altKey: false });
   }
+
   function onTouchMove(e) {
     e.preventDefault();
+    if (e.touches.length === 2 && isTouchPinching) {
+      // Pinch-to-zoom centered on the mid-point between both fingers
+      const newDist = getTouchDist(e.touches[0], e.touches[1]);
+      const scale   = newDist / touchPinchDist;
+      const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, touchPinchZoom * scale));
+
+      const rect   = viewport.getBoundingClientRect();
+      const midX   = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY   = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const pivotX = midX - rect.left;
+      const pivotY = midY - rect.top;
+
+      // Zoom toward the mid-point
+      panOffsetX = pivotX - (pivotX - touchPanOffsetX) * (newZoom / touchPinchZoom);
+      panOffsetY = pivotY - (pivotY - touchPanOffsetY) * (newZoom / touchPinchZoom);
+
+      // Also pan by mid-point movement
+      panOffsetX += midX - touchPanStartX;
+      panOffsetY += midY - touchPanStartY;
+
+      zoom = newZoom;
+      applyTransform();
+      updateZoomLabel();
+      return;
+    }
+    if (isTouchPinching) return;
+    if (!e.touches[0]) return;
     const t = e.touches[0];
     onMouseMove({ clientX: t.clientX, clientY: t.clientY });
   }
+
   function onTouchEnd(e) {
+    e.preventDefault();
+    if (isTouchPinching && e.touches.length < 2) {
+      isTouchPinching = false;
+      isDrawing = false;
+      isPanning = false;
+      return;
+    }
+    if (!e.changedTouches[0]) return;
     const t = e.changedTouches[0];
     onMouseUp({ clientX: t.clientX, clientY: t.clientY });
+  }
+
+  function onTouchCancel(e) {
+    e.preventDefault();
+    isTouchPinching = false;
+    isDrawing = false;
+    isPanning = false;
   }
 
   /* ─── Wheel (zoom) ─── */
   function onWheel(e) {
     e.preventDefault();
     const delta = e.deltaY < 0 ? 1.1 : 0.9;
-    const newZoom = Math.max(0.05, Math.min(20, zoom * delta));
+    const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * delta));
     // Zoom toward cursor
     const rect = viewport.getBoundingClientRect();
     const mx = e.clientX - rect.left;
