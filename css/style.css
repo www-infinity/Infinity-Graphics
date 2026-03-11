@@ -298,6 +298,9 @@ html, body {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   overflow: hidden;
   cursor: crosshair;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 #canvas-container {
@@ -870,4 +873,12 @@ ul { padding-left: 18px; line-height: 2; }
   #right-panel { display: none; }
   :root { --panel-w: 0px; }
   #tool-options-bar { right: 0; }
+}
+
+/* ── Touch / pointer-coarse devices (Android, tablets) ── */
+@media (hover: none) and (pointer: coarse) {
+  .tool-btn { min-width: 44px; min-height: 44px; }
+  .menu-item { min-height: 44px; padding: 0 14px; }
+  .layer-item { min-height: 44px; }
+  #status-bar { display: none; }
 }
