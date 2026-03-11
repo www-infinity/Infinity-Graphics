@@ -89,6 +89,18 @@ html, body {
   margin-left: auto;
 }
 
+/* Mobile menu toggle - hidden on desktop */
+#mobile-menu-toggle {
+  display: none;
+  font-size: 24px;
+  padding: 8px;
+  margin-right: 8px;
+}
+
+.mobile-only {
+  display: none;
+}
+
 .dropdown {
   position: fixed;
   background: var(--bg-panel);
@@ -861,24 +873,341 @@ ul { padding-left: 18px; line-height: 2; }
 .filter-row span { min-width: 40px; text-align: right; font-size: 0.8rem; color: var(--text-muted); }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE - ANDROID & MOBILE OPTIMIZED
    ============================================================ */
+
+/* Tablet and small screens */
 @media (max-width: 900px) {
   :root {
     --panel-w: 220px;
+    --font-size: 14px;
+  }
+
+  html, body {
+    font-size: 14px;
+  }
+
+  /* Make text more readable on smaller screens */
+  .dropdown-item, .menu-item, .tool-btn {
+    font-size: 14px;
   }
 }
 
+/* Mobile phones - Android optimized */
 @media (max-width: 700px) {
-  #right-panel { display: none; }
-  :root { --panel-w: 0px; }
-  #tool-options-bar { right: 0; }
+  :root {
+    --panel-w: 0px;
+    --toolbar-w: 60px;
+    --menu-h: 48px;
+    --font-size: 15px;
+  }
+
+  html, body {
+    font-size: 15px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Show mobile menu toggle */
+  #mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide right panel completely on mobile */
+  #right-panel {
+    display: none !important;
+  }
+
+  /* Expand canvas to full width */
+  #tool-options-bar {
+    right: 0;
+    left: var(--toolbar-w);
+  }
+
+  #canvas-workspace {
+    right: 0;
+  }
+
+  /* Larger menu bar for easier touch */
+  #menu-bar {
+    height: 48px;
+    padding: 0 4px;
+    gap: 2px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide menu text labels, show only icons on very small screens */
+  .menu-nav {
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .menu-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu-item {
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  .menu-logo {
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  /* Simplify menu actions for mobile */
+  .menu-actions {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .menu-actions .action-btn.secondary {
+    display: none;
+  }
+
+  /* Larger buttons for touch */
+  .icon-btn, .action-btn {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 18px;
+  }
+
+  /* Dropdown menus - full width on mobile */
+  .dropdown {
+    left: 4px !important;
+    right: 4px !important;
+    min-width: auto;
+    max-width: calc(100vw - 8px);
+  }
+
+  .dropdown-item {
+    padding: 12px 16px;
+    font-size: 15px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hide keyboard shortcuts on mobile */
+  .dropdown-item kbd {
+    display: none;
+  }
+
+  /* Left toolbar - wider for easier touch */
+  #left-toolbar {
+    width: 60px;
+    padding: 8px 4px;
+    transition: transform 0.3s ease;
+  }
+
+  /* Hide toolbar when toggled on mobile */
+  #toolbar.mobile-hidden {
+    transform: translateX(-100%);
+  }
+
+  .tool-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+  }
+
+  /* Mode tabs - larger touch targets */
+  .mode-tabs {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .mode-tab {
+    padding: 10px 8px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+
+  /* Tool options bar */
+  #tool-options-bar {
+    height: auto;
+    min-height: 48px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .tool-option {
+    gap: 6px;
+  }
+
+  .tool-option label {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .tool-option input[type="number"],
+  .tool-option input[type="color"] {
+    font-size: 14px;
+    min-height: 36px;
+  }
+
+  /* Modals - full screen on mobile */
+  .modal-content {
+    width: 95%;
+    max-width: 95%;
+    max-height: 90vh;
+    margin: 5vh auto;
+  }
+
+  /* Toast messages - position better for mobile */
+  #toast {
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    font-size: 14px;
+  }
 }
 
-/* ── Touch / pointer-coarse devices (Android, tablets) ── */
+/* Small mobile devices - further optimization */
+@media (max-width: 480px) {
+  :root {
+    --toolbar-w: 56px;
+    --menu-h: 52px;
+  }
+
+  #menu-bar {
+    height: 52px;
+  }
+
+  #left-toolbar {
+    width: 56px;
+  }
+
+  .tool-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .menu-item {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+/* Touch devices (Android, iOS, tablets) - Optimized touch targets */
 @media (hover: none) and (pointer: coarse) {
-  .tool-btn { min-width: 44px; min-height: 44px; }
-  .menu-item { min-height: 44px; padding: 0 14px; }
-  .layer-item { min-height: 44px; }
-  #status-bar { display: none; }
+  /* Ensure all interactive elements meet 44x44px minimum */
+  .tool-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .menu-item {
+    min-height: 44px;
+    padding: 8px 14px;
+  }
+
+  .layer-item {
+    min-height: 48px;
+    padding: 8px;
+  }
+
+  .layer-controls button {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .dropdown-item {
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+
+  /* Hide status bar on touch devices - more canvas space */
+  #status-bar {
+    display: none;
+  }
+
+  /* Larger slider handles for better touch interaction */
+  input[type="range"] {
+    height: 32px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Better spacing for color picker */
+  input[type="color"] {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  /* Increase button sizes in modals */
+  .modal-footer button {
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Landscape mode on mobile - maximize canvas */
+@media (max-width: 900px) and (orientation: landscape) {
+  #menu-bar {
+    height: 44px;
+  }
+
+  .menu-item {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  #left-toolbar {
+    padding: 4px 2px;
+  }
+
+  .tool-btn {
+    width: 44px;
+    height: 44px;
+    margin: 2px 0;
+  }
+}
+
+/* Prevent text overflow anywhere */
+* {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.menu-item, .dropdown-item, .layer-name, .tool-option label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Ensure no horizontal scrolling on body */
+body {
+  overflow-x: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }

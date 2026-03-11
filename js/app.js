@@ -76,6 +76,17 @@ const App = (() => {
 
   /* ── Event Binding ── */
   function bindEvents() {
+    // Mobile menu toggle for Android/mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', () => {
+        const toolbar = document.getElementById('toolbar');
+        if (toolbar) {
+          toolbar.classList.toggle('mobile-hidden');
+        }
+      });
+    }
+
     // Tool buttons
     document.querySelectorAll('.tool-btn').forEach(btn => {
       btn.addEventListener('click', () => {
