@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a1a2e" />
   <title>Infinity Graphics — Web Design Interface</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -10,6 +14,11 @@
 
 <!-- ───────────────────────── MENU BAR ───────────────────────── -->
 <header id="menu-bar">
+  <!-- Mobile menu toggle -->
+  <button id="mobile-menu-toggle" class="icon-btn mobile-only" title="Toggle Menu" aria-label="Toggle Menu">
+    ☰
+  </button>
+
   <div class="menu-logo">
     <span class="logo-icon">∞</span>
     <span class="logo-text">Infinity Graphics</span>
@@ -24,10 +33,10 @@
     <div class="menu-item" data-menu="help">Help</div>
   </nav>
   <div class="menu-actions">
-    <button id="btn-undo" class="icon-btn" title="Undo (Ctrl+Z)">↩</button>
-    <button id="btn-redo" class="icon-btn" title="Redo (Ctrl+Y)">↪</button>
-    <button id="btn-export" class="action-btn" title="Export">Export</button>
-    <button id="btn-new" class="action-btn secondary" title="New Document">New</button>
+    <button id="btn-undo" class="icon-btn" title="Undo" aria-label="Undo">↩</button>
+    <button id="btn-redo" class="icon-btn" title="Redo" aria-label="Redo">↪</button>
+    <button id="btn-export" class="action-btn" title="Export" aria-label="Export">Export</button>
+    <button id="btn-new" class="action-btn secondary" title="New Document" aria-label="New Document">New</button>
   </div>
   <!-- Hamburger button — visible only on mobile -->
   <button id="mobile-menu-btn" class="icon-btn" aria-label="Open menu" title="Menu">☰</button>
