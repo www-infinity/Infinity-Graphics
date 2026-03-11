@@ -875,10 +875,163 @@ ul { padding-left: 18px; line-height: 2; }
   #tool-options-bar { right: 0; }
 }
 
+/* ── Hamburger button — hidden on large screens ── */
+#mobile-menu-btn {
+  display: none;
+  margin-left: auto;
+  font-size: 1.2rem;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+/* ── Mobile navigation overlay ── */
+#mobile-nav {
+  display: none;
+  position: fixed;
+  top: var(--menu-h);
+  left: 0;
+  width: 100%;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  z-index: 1500;
+  max-height: calc(100vh - var(--menu-h));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#mobile-nav.visible { display: block; }
+
+.mobile-nav-section {
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0;
+}
+.mobile-nav-section:last-child { border-bottom: none; }
+.mobile-nav-section-title {
+  padding: 8px 16px 4px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.mobile-nav-item {
+  padding: 12px 20px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.12s;
+}
+.mobile-nav-item:hover,
+.mobile-nav-item:active { background: var(--bg-hover); }
+.mobile-nav-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2px 16px;
+}
+
+/* ── Mobile panel toggle button ── */
+#mobile-panel-btn {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 850;
+  width: 24px;
+  height: 56px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  border-right: none;
+  border-radius: var(--radius) 0 0 var(--radius);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.15s, color 0.15s;
+}
+#mobile-panel-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+#mobile-panel-btn.panel-open { color: var(--accent); }
+
+/* ─── Small-screen layout (≤ 600 px – phone portrait) ─── */
+@media (max-width: 600px) {
+  :root {
+    --menu-h: 44px;
+    --options-h: 40px;
+    --toolbar-w: 46px;
+  }
+
+  /* Show hamburger, hide desktop nav */
+  #mobile-menu-btn { display: flex; }
+  .menu-nav        { display: none; }
+  .menu-actions    { display: none; }
+
+  /* Show mobile panel toggle */
+  #mobile-panel-btn { display: flex; align-items: center; justify-content: center; }
+
+  /* Right panel slides in over canvas when toggled */
+  #right-panel {
+    display: flex;
+    position: fixed;
+    top: calc(var(--menu-h) + var(--options-h));
+    right: -100%;
+    bottom: 0;
+    width: min(280px, 85vw);
+    z-index: 840;
+    transition: right 0.25s ease;
+    border-left: 1px solid var(--border);
+  }
+  #right-panel.mobile-open {
+    right: 0;
+  }
+
+  /* Adjust workspace so canvas fills width when panel is closed */
+  :root { --panel-w: 0px; }
+  #tool-options-bar { right: 0; }
+
+  /* Canvas mode tabs: scrollable row on narrow screens.
+     45 vw leaves enough space for the tool-name label on the left. */
+  #canvas-mode-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+    scrollbar-width: none;
+    max-width: 45vw;
+  }
+  #canvas-mode-tabs::-webkit-scrollbar { display: none; }
+
+  /* Tool options content: allow shrink */
+  #tool-options-content { overflow: hidden; flex: 1; }
+
+  /* Dropdowns: full-width, left-anchored */
+  .dropdown {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* Modal: full-width on mobile */
+  .modal-content {
+    min-width: 0;
+    width: calc(100vw - 24px);
+  }
+  .modal-content.wide { min-width: 0; }
+
+  /* Shortcuts grid: stack vertically */
+  .shortcuts-grid { flex-direction: column; gap: 12px; }
+}
+
 /* ── Touch / pointer-coarse devices (Android, tablets) ── */
 @media (hover: none) and (pointer: coarse) {
   .tool-btn { min-width: 44px; min-height: 44px; }
   .menu-item { min-height: 44px; padding: 0 14px; }
   .layer-item { min-height: 44px; }
   #status-bar { display: none; }
+  /* Larger touch targets for dropdowns */
+  .dropdown-item { padding: 11px 16px; }
 }
